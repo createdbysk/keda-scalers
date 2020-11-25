@@ -11,9 +11,13 @@ guard-%:
 clean:
 	helm delete ${HELM_NAME} -n ${KEDA_SCALER_NAMESPACE}
 
+build:
+	docker build . -t satvidh/keda-aws-sqs-queue-scaler-example-sleep:1.0.0
+
 deploy: guard-QUEUE_NAME guard-AWS_DEFAULT_REGION guard-AWS_ACCESS_KEY_ID guard-AWS_SECRET_ACCESS_KEY guard-AWS_SESSION_TOKEN
 	KUBERNETES_NAMESPACE=${KEDA_SCALER_NAMESPACE} \
 	HELM_NAME=${HELM_NAME} \
+	DEBUG=${DEBUG} \
 		./deploy.sh
 
 watch-pods:

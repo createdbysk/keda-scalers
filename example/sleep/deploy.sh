@@ -31,8 +31,15 @@ fi
 QUEUE_URL=$(aws sqs list-queues --queue-name ${QUEUE_NAME} | \
     jq ".QueueUrls[0]" -r)
 
+if [[ ! -z ${DEBUG} ]] && [[ "${DEBUG}"=="true" ]]; then
+    echo "DEBUG is set to ${DEBUG}"
+    echo "Will dry-run"
+    ADDITIONAL_PARAMETERS="--dry-run --debug"
+fi
+
 helm install ${HELM_NAME} keda-scalers/keda-aws-sqs-queue-scaler \
     -n ${KUBERNETES_NAMESPACE} \
+    ${ADDITIONAL_PARAMETERS} \
     --set keda.awsAccessKeyId=${AWS_ACCESS_KEY_ID} \
     --set keda.awsSecretAccessKey=${AWS_SECRET_ACCESS_KEY} \
     --set keda.awsSessionToken=${AWS_SESSION_TOKEN} \
