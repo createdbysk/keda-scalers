@@ -1,0 +1,17 @@
+# This is copied from KEDA-AWS-SQS-Python/manifests/deployment.yaml
+env:
+- name: AWS_ACCESS_KEY_ID
+  valueFrom:
+    secretKeyRef:
+      name: keda-secrets
+      key: awsAccessKeyId
+- name: AWS_SECRET_ACCESS_KEY
+  valueFrom:
+    secretKeyRef:
+      name: keda-secrets
+      key: awsSecretAccessKey
+- name: AWS_SESSION_TOKEN
+  valueFrom:
+    secretKeyRef:
+      name: keda-secrets
+      key: awsSessionToken
