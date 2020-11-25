@@ -2,6 +2,10 @@ KEDA_NAMESPACE=keda
 KEDA_SCALER_NAMESPACE=keda-scaler
 HELM_NAME=keda-aws-sqs-queue-scaler
 
+ifndef NUMBER_OF_MESSAGES
+override NUMBER_OF_MESSAGES = 10
+endif
+
 guard-%:
 	@ if [ "${${*}}" = "" ]; then \
         echo "Environment variable $* not set"; \
@@ -27,10 +31,10 @@ watch-pods:
 	kubectl get pods -n ${KEDA_SCALER_NAMESPACE} -w
 
 tail-logs:
-	kubectl logs -f deployment/keda-aws-sqs-python -n ${KEDA_SCALER_NAMESPACE}
+	kubectl logs -f deployment/keda-aws-sqs-queue-scaler -n ${KEDA_SCALER_NAMESPACE}
 
 fill-queue:
-	cd tools; ./fill_queue_with_messages.sh 10
+	cd tools; ./fill_queue_with_messages.sh ${NUMBER_OF_MESSAGES}
 
 create-keda-namespace:
 	-kubectl create namespace keda
@@ -38,6 +42,13 @@ create-keda-namespace:
 install-keda: create-keda-namespace remove-keda
 	helm repo add kedacore https://kedacore.github.io/charts
 	helm repo update
+	-kubectl delete secret keda-secrets \
+		--namespace=keda
+	kubectl create secret generic keda-secrets \
+		--namespace=keda \
+		--from-literal=awsAccessKeyId=${AWS_ACCESS_KEY_ID} \
+		--from-literal=awsSecretAccessKey=${AWS_SECRET_ACCESS_KEY} \
+		--from-literal=awsSessionToken=${AWS_SESSION_TOKEN}
 	helm install keda kedacore/keda --namespace ${KEDA_NAMESPACE} \
 		-f helm/keda-values.yaml
 
@@ -52,6 +63,8 @@ remove-keda-scalers-repository:
 	-helm repo remove keda-scalers
 
 remove-keda:
+	-kubectl delete secret keda-secrets \
+		--namespace=keda
 	-helm uninstall -n ${KEDA_NAMESPACE} keda
 	-helm repo remove kedacore
 

@@ -16,7 +16,6 @@ def run():
             try:
                 print(f"Message from queue {message.body}")
                 payload = json.loads(message.body)
-                print("PAYLOAD", payload)
                 print(
                     f"Handle Message {payload['message_number']}. \n"
                     f"Will sleep for {payload['sleep_seconds']} seconds."
@@ -27,7 +26,10 @@ def run():
                     f"Slept for {payload['sleep_seconds']}"
                 )
             except Exception as e:
-                f"Message {payload['message_number']} caused an exception {e}. \n"
+                print(
+                    f"Message {message.body}"
+                    f" caused an exception {e}. \n"
+                )
             finally:
                 message.delete()
 
