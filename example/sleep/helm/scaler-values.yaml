@@ -3,3 +3,8 @@ keda:
   cooldownPeriod:  60
   fullnameOverride: sleep-example
   identityOwner: operator
+env:
+- name: NODE_NAME
+  valueFrom:
+    fieldRef:
+      fieldPath: metadata.name

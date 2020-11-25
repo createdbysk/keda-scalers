@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Ensure that the execution only happens with the dev account credentials.
 # I know - this is brittle - Remember, this is a POC.
 DEPLOYMENT_ACCOUNT=$(aws sts get-caller-identity | jq ".Account" -r)

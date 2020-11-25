@@ -2,7 +2,37 @@
 
 Provides helm charts for KEDA AWS SQS queue scaler
 
-# Acknowledgement
+## Usage
+
+Learn how to use the chart through the example(s) below.
+
+### example/sleep
+
+        cd example/sleep
+
+* Install KEDA
+
+        make install
+
+* Build the example
+
+        make build
+
+* Deploy the example
+
+        make deploy
+
+* Watch the action
+  * In a terminal window, watch pods come and go
+
+            make watch-pods
+
+  * In another terminal window, watch logs.
+    * Install [stern](https://github.com/wercker/stern)
+
+            make tail-logs
+
+## Acknowledgement
 
 * The helm chart is based on the manifest in https://github.com/patnaikshekhar/KEDA-AWS-SQS-Python. 
 * The example is based on the code in https://github.com/patnaikshekhar/KEDA-AWS-SQS-Python

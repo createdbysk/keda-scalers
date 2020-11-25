@@ -31,7 +31,10 @@ watch-pods:
 	kubectl get pods -n ${KEDA_SCALER_NAMESPACE} -w
 
 tail-logs:
-	kubectl logs -f deployment/keda-aws-sqs-queue-scaler -n ${KEDA_SCALER_NAMESPACE}
+	KUBERNETES_NAMESPACE=${KEDA_SCALER_NAMESPACE} \
+	HELM_NAME=${HELM_NAME} \
+	DEBUG=${DEBUG} \
+		./tail_logs.sh
 
 fill-queue:
 	cd tools; ./fill_queue_with_messages.sh ${NUMBER_OF_MESSAGES}
