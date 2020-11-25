@@ -1,3 +1,4 @@
 keda:
   minReplicaCount: 1
+  cooldownPeriod:  60
   fullnameOverride: sleep-example
