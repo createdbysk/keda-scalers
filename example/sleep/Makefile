@@ -8,8 +8,11 @@ guard-%:
         exit 1; \
 	fi
 
-clean:
-	helm delete ${HELM_NAME} -n ${KEDA_SCALER_NAMESPACE}
+undeploy:
+	-helm delete ${HELM_NAME} -n ${KEDA_SCALER_NAMESPACE}
+
+unbuild:
+	-docker rmi satvidh/keda-aws-sqs-queue-scaler-example-sleep:1.0.0
 
 build:
 	docker build . -t satvidh/keda-aws-sqs-queue-scaler-example-sleep:1.0.0
@@ -55,6 +58,6 @@ remove-keda:
 remove-helm-git-plugin:
 	-helm plugin remove helm-git
 
-install: install-helm-git-plugin install-keda get-keda-scalers-repository
+install: build install-helm-git-plugin install-keda get-keda-scalers-repository
 
-uninstall: remove-keda-scalers-repository remove-keda remove-helm-git-plugin
+clean: undeploy remove-keda-scalers-repository remove-keda remove-helm-git-plugin unbuild

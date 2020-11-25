@@ -26,7 +26,7 @@ spec:
       queueURL: {{ required "A valid keda.awsSqsQueueUrl entry required!" .Values.keda.awsSqsQueueUrl | quote }}
       awsRegion: {{ required "A valid keda.awsRegion entry required!" .Values.keda.awsRegion | quote }}
       {{- if .Values.keda.identityOwner }}
-      identityOwner: .Values.keda.identityOwner # Valid values podIdentity | operator: default podIdentity
+      identityOwner: {{ .Values.keda.identityOwner }} # Valid values podIdentity | operator: default podIdentity
       {{- end }}
       {{- if .Values.keda.awsSqsQueueLength }}
       queueLength: {{ .Values.keda.awsSqsQueueLength | quote }}
