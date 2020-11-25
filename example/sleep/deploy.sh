@@ -6,6 +6,17 @@ if [[ "$DEPLOYMENT_ACCOUNT" != "969204706979" ]]; then
     exit 1
 fi
 
+if [[ -z ${KUBERNETES_NAMESPACE} ]]; then
+    echo "KUBERNETES_NAMESPACE environment variable must provide the name of the "
+    echo "kubernetes namespace to deploy into."
+    exit 1
+fi
+
+if [[ -z ${HELM_NAME} ]]; then
+    echo "HELM_NAME environment variable must provide the name for helm."
+    exit 1
+fi
+
 if [[ -z ${QUEUE_NAME} ]]; then
     echo "QUEUE_NAME environment variable must provide the name of the queue "
     echo "that scales this deployment."
@@ -20,11 +31,12 @@ fi
 QUEUE_URL=$(aws sqs list-queues --queue-name ${QUEUE_NAME} | \
     jq ".QueueUrls[0]" -r)
 
-helm install keda-aws-sqs-queue-scaler keda-scalers/keda-aws-sqs-queue-scaler \
-    -n keda \
+helm install ${HELM_NAME} keda-scalers/keda-aws-sqs-queue-scaler \
+    -n ${KUBERNETES_NAMESPACE} \
     --set keda.awsAccessKeyId=${AWS_ACCESS_KEY_ID} \
     --set keda.awsSecretAccessKey=${AWS_SECRET_ACCESS_KEY} \
     --set keda.awsSessionToken=${AWS_SESSION_TOKEN} \
     --set keda.awsSqsQueueName=${QUEUE_NAME} \
     --set keda.awsSqsQueueUrl=${QUEUE_URL} \
-    --set keda.awsRegion=${AWS_DEFAULT_REGION}
+    --set keda.awsRegion=${AWS_DEFAULT_REGION} \
+    -f helm/scaler-values.yaml

@@ -30,9 +30,9 @@ QUEUE_URL=$(aws sqs list-queues --queue-name ${QUEUE_NAME} | \
 
 for x in $(seq 1 ${NUMBER_OF_MESSAGES})
 do
+    SLEEP_SECONDS=$[ ${RANDOM} % ${MAX_SLEEP_SECONDS} + ${MIN_SLEEP_SECONDS} ]
     MESSAGE="{\"message_number\":${x},\"sleep_seconds\":${SLEEP_SECONDS}}"
     echo "${MESSAGE}"
-    SLEEP_SECONDS=$[ ${RANDOM} % ${MAX_SLEEP_SECONDS} + ${MIN_SLEEP_SECONDS} ]
     aws sqs send-message \
     --message-body="${MESSAGE}" \
     --queue-url=${QUEUE_URL}

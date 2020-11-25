@@ -1,20 +1,29 @@
+KEDA_NAMESPACE=keda
+KEDA_SCALER_NAMESPACE=keda-scaler
+HELM_NAME=keda-aws-sqs-queue-scaler
+
 guard-%:
 	@ if [ "${${*}}" = "" ]; then \
         echo "Environment variable $* not set"; \
         exit 1; \
 	fi
 
+clean:
+	helm delete ${HELM_NAME} -n ${KEDA_SCALER_NAMESPACE}
+
 deploy: guard-QUEUE_NAME guard-AWS_DEFAULT_REGION guard-AWS_ACCESS_KEY_ID guard-AWS_SECRET_ACCESS_KEY guard-AWS_SESSION_TOKEN
-	./deploy.sh
+	KUBERNETES_NAMESPACE=${KEDA_SCALER_NAMESPACE} \
+	HELM_NAME=${HELM_NAME} \
+		./deploy.sh
 
 watch-pods:
-	kubectl get pods -n keda -w
+	kubectl get pods -n ${KEDA_SCALER_NAMESPACE} -w
 
 tail-logs:
-	kubectl logs -f deployment/keda-aws-sqs-python -n keda
+	kubectl logs -f deployment/keda-aws-sqs-python -n ${KEDA_SCALER_NAMESPACE}
 
 fill-queue:
-	cd tools; ./fill_queue_with_messages.sh 50
+	cd tools; ./fill_queue_with_messages.sh 10
 
 create-keda-namespace:
 	-kubectl create namespace keda
@@ -22,8 +31,8 @@ create-keda-namespace:
 install-keda: create-keda-namespace remove-keda
 	helm repo add kedacore https://kedacore.github.io/charts
 	helm repo update
-	helm install keda kedacore/keda --namespace keda \
-		-f helm/values.yaml
+	helm install keda kedacore/keda --namespace ${KEDA_NAMESPACE} \
+		-f helm/keda-values.yaml
 
 install-helm-git-plugin: remove-helm-git-plugin
 	-helm plugin install https://github.com/aslafy-z/helm-git --version 0.10.0
@@ -36,7 +45,7 @@ remove-keda-scalers-repository:
 	-helm repo remove keda-scalers
 
 remove-keda:
-	-helm uninstall -n keda keda
+	-helm uninstall -n ${KEDA_NAMESPACE} keda
 	-helm repo remove kedacore
 
 remove-helm-git-plugin:

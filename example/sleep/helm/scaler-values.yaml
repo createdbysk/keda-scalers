@@ -1,0 +1,3 @@
+keda:
+  minReplicaCount: 1
+  fullnameOverride: sleep-example
