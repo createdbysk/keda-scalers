@@ -5,7 +5,7 @@ metadata:
   name: {{ .Values.keda.scalerName }}
 spec:
   scaleTargetRef:
-    deploymentName: {{ include "charts.fullname" . }}
+    name: {{ include "charts.fullname" . }}
   {{- with .Values.keda }}
   {{- if .pollingInterval }}
   pollingInterval: {{ .pollingInterval }}  # Optional. Default: 30 seconds
