@@ -32,6 +32,16 @@ Learn how to use the chart through the example(s) below.
 
             make tail-logs
 
+## Troubleshoot issues
+
+* If KEDA will not scale the containers even if there are messages in the queue
+  * If you deployed locally with `operator` credentials, ensure that `keda-operator` deployment has valid AWS credentials.
+    * Run the command below to look at the operator logs
+
+            kubectl logs -f deployment/keda-operator -n keda
+
+    Look for any errors reported in those logs.
+
 ## Acknowledgement
 
 * The helm chart is based on the manifest in https://github.com/patnaikshekhar/KEDA-AWS-SQS-Python. 
