@@ -1,0 +1,31 @@
+# Default values for charts.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+
+ingress:
+  enabled: false
+
+keda:
+  scalingType: awsSqsScaler
+  scalerName: aws-sqs-queue-scaler
+  # awsSqsQueueName:      # Required
+  # awsSqsQueueUrl:       # Required
+  # awsRegion:            # Required
+  # pollingInterval: 30   # Optional. Default 30 seconds
+  # cooldownPeriod: 300   # Optional. Default: 300 seconds
+  # minReplicaCount: 0    # Optional. Default: 0
+  # maxReplicaCount: 100  # Optional. Default: 100

@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "charts.fullname" . }}
+  labels:
+    {{- include "charts.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "charts.selectorLabels" . | nindent 6 }}
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "charts.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        name: {{ .Chart.Name }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "charts.secrets" . }}
+              key: awsAccessKeyId
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "charts.secrets" . }}
+              key: awsSecretAccessKey
+        - name: AWS_SESSION_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "charts.secrets" . }}
+              key: awsSessionToken
+        - name: AWS_DEFAULT_REGION
+          value: {{ .Values.keda.awsRegion }}
+        - name: QUEUE_NAME
+          value: {{ required "A valid .Values.keda.awsSqsQueueName entry required!" .Values.keda.awsSqsQueueName | quote }}
+        {{- if .Values.env }}
+        {{- toYaml .Values.env | nindent 12 -}}
+        {{- end }}

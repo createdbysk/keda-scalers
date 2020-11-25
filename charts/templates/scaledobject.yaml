@@ -1,0 +1,36 @@
+{{- if eq .Values.keda.scalingType "awsSqsScaler"}}
+apiVersion: keda.k8s.io/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ .Values.keda.scalerName }}
+spec:
+  scaleTargetRef:
+    deploymentName: {{ include "charts.fullname" . }}
+  {{- with .Values.keda }}
+  {{- if .pollingInterval }}
+  pollingInterval: {{ .pollingInterval }}  # Optional. Default: 30 seconds
+  {{- end }}
+  {{- if .cooldownPeriod }}
+  cooldownPeriod: {{ .cooldownPeriod }}  # Optional. Default: 300 seconds
+  {{- end }}
+  {{- if .minReplicaCount }}
+  minReplicaCount: {{ .minReplicaCount }}   # Optional. Default: 0
+  {{- end }}
+  {{- if .maxReplicaCount }}
+  maxReplicaCount: {{ .maxReplicaCount }}  # Optional. Default: 100
+  {{- end }}
+  {{- end }}
+  triggers:
+  - type: aws-sqs-queue
+    metadata:
+      queueURL: {{ required "A valid keda.awsSqsQueueUrl entry required!" .Values.keda.awsSqsQueueUrl | quote }}
+      awsRegion: {{ required "A valid keda.awsRegion entry required!" .Values.keda.awsRegion | quote }}
+      {{- if .Values.keda.identityOwner }}
+      identityOwner: .Values.keda.identityOwner # Valid values podIdentity | operator: default podIdentity
+      {{- end }}
+      {{- if .Values.keda.awsSqsQueueLength }}
+      queueLength: {{ .Values.keda.awsSqsQueueLength | quote }}
+      {{- else }}
+      queueLength: "5"
+      {{- end }}
+{{- end }}
