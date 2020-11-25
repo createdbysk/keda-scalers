@@ -1,6 +1,6 @@
 apiVersion: v2
-name: keda-aws-sqs-scaler
-description: A Helm chart for KEDA AWS SQS Scaler based deployment
+name: keda-aws-sqs-queue-scaler
+description: A Helm chart for KEDA AWS SQS Queue Scaler based deployment
 
 # A chart can be either an 'application' or a 'library' chart.
 #
