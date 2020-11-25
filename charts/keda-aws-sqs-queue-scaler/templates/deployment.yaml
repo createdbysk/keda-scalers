@@ -43,5 +43,5 @@ spec:
         - name: QUEUE_NAME
           value: {{ required "A valid .Values.keda.awsSqsQueueName entry required!" .Values.keda.awsSqsQueueName | quote }}
         {{- if .Values.env }}
-        {{- toYaml .Values.env | nindent 10 -}}
+        {{- toYaml .Values.env | nindent 8 -}}
         {{- end }}
