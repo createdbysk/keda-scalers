@@ -76,4 +76,6 @@ remove-helm-git-plugin:
 
 install: build install-helm-git-plugin install-keda get-keda-scalers-repository
 
-clean: undeploy remove-keda-scalers-repository remove-keda remove-helm-git-plugin unbuild
+uninstall: remove-keda-scalers-repository remove-keda remove-helm-git-plugin unbuild
+
+clean: undeploy uninstall
