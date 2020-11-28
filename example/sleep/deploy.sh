@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
 # include_bash_utils must be copied into every script because it is needed
 # to find bash_utils and load it.

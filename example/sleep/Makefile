@@ -59,9 +59,6 @@ install-keda: create-keda-namespace remove-keda
 	helm install keda kedacore/keda --namespace ${KEDA_NAMESPACE} \
 		-f helm/keda-values.yaml
 
-install-helm-git-plugin: remove-helm-git-plugin
-	-helm plugin install https://github.com/aslafy-z/helm-git --version 0.10.0
-
 add-keda-scalers-namespace: delete-keda-scalers-namespace
 	kubectl create namespace keda-scalers
 
@@ -74,11 +71,8 @@ remove-keda:
 	-helm uninstall -n ${KEDA_NAMESPACE} keda
 	-helm repo remove kedacore
 
-remove-helm-git-plugin:
-	-helm plugin remove helm-git
+install: install-keda add-keda-scalers-namespace
 
-install: install-helm-git-plugin install-keda add-keda-scalers-namespace
-
-uninstall: delete-keda-scalers-namespace remove-keda remove-helm-git-plugin
+uninstall: delete-keda-scalers-namespace remove-keda
 
 clean: undeploy uninstall
