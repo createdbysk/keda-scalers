@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
 
 # include_bash_utils must be copied into every script because it is needed
 # to find bash_utils and load it.
@@ -14,6 +14,12 @@ function include_bash_utils() {
 
 include_bash_utils ./tools/bash_utils.sh
 util::include ./tools/aws_utils.sh
+
+if [[ -z ${CHARTS_PATH} ]]; then
+    echo "CHARTS_PATH environment variable must provide relative path "
+    echo "to the helm chart path."
+    exit 1
+fi
 
 if [[ -z ${KUBERNETES_NAMESPACE} ]]; then
     echo "KUBERNETES_NAMESPACE environment variable must provide the name of the "
@@ -46,7 +52,9 @@ if [[ ! -z ${DEBUG} ]] && [[ "${DEBUG}"=="true" ]]; then
     ADDITIONAL_PARAMETERS="--dry-run --debug"
 fi
 
-helm install ${HELM_NAME} keda-scalers/keda-aws-sqs-queue-scaler \
+CHART_ABSPATH=$(util::abspath_given_path_relative_to_script ${CHARTS_PATH})
+
+helm install ${HELM_NAME} ${CHARTS_PATH}/keda-aws-sqs-queue-scaler \
     -n ${KUBERNETES_NAMESPACE} \
     ${ADDITIONAL_PARAMETERS} \
     --set keda.awsAccessKeyId=${AWS_ACCESS_KEY_ID} \

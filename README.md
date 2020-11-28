@@ -2,6 +2,14 @@
 
 Provides helm charts for KEDA AWS SQS queue scaler
 
+## Pre-requisites
+
+### aws-cli
+
+Follow instructions for the respective OSes to obtain the aws-cli.
+
+NOTE: For some reason on Windows, the awscli from pip does not work correctly. Use the MSI version documented for aws-cli v2 instead.
+
 ## Usage
 
 Learn how to use the chart through the example(s) below.
@@ -17,6 +25,8 @@ Learn how to use the chart through the example(s) below.
 * Build the example
 
         make build
+
+        # TODO: Document image push into Minikube/Kind       
 
 * Deploy the example
 
