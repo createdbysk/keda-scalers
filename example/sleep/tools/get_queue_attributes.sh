@@ -12,8 +12,8 @@ function include_bash_utils() {
     source ${BASH_UTILS_PATH}
 }
 
-include_bash_utils ./tools/bash_utils.sh
-util::include ./tools/aws_utils.sh
+include_bash_utils ./bash_utils.sh
+util::include ./aws_utils.sh
 
 echo "Attributes of ${QUEUE_NAME}"
 QUEUE_URL=$(util::aws::get_queue_url ${QUEUE_NAME}) \

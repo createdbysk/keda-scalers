@@ -59,11 +59,11 @@ install-keda: create-keda-namespace remove-keda
 	helm install keda kedacore/keda --namespace ${KEDA_NAMESPACE} \
 		-f helm/keda-values.yaml
 
-add-keda-scalers-namespace: delete-keda-scalers-namespace
-	kubectl create namespace keda-scalers
+add-keda-scaler-namespace: delete-keda-scaler-namespace
+	kubectl create namespace ${KEDA_SCALER_NAMESPACE}
 
-delete-keda-scalers-namespace:
-	-kubectl delete namespace keda-scalers
+delete-keda-scaler-namespace:
+	-kubectl delete namespace ${KEDA_SCALER_NAMESPACE}
 
 remove-keda:
 	-kubectl delete secret keda-secrets \
@@ -71,8 +71,8 @@ remove-keda:
 	-helm uninstall -n ${KEDA_NAMESPACE} keda
 	-helm repo remove kedacore
 
-install: install-keda add-keda-scalers-namespace
+install: install-keda add-keda-scaler-namespace
 
-uninstall: delete-keda-scalers-namespace remove-keda
+uninstall: delete-keda-scaler-namespace remove-keda
 
 clean: undeploy uninstall
